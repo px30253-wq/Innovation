@@ -2,3 +2,5 @@ streamlit
 pandas
 openpyxl
 xlrd
+requests
+line-bot-sdk

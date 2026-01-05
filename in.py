@@ -94,7 +94,8 @@ if uploaded_file:
                         success_count += 1
                     
                     # อัปเดต Progress Bar
-                    progress_bar.progress((index + 1) / len(final_df))
+                    progress_value = (index + 1) / len(final_df)
+                    progress_bar.progress(float(progress_value))
                 
                 st.balloons()
                 st.success(f"ส่งเข้า LINE สำเร็จแล้ว {success_count} รายการ!")

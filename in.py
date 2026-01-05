@@ -1,11 +1,11 @@
 import requests
 
 # 1. ข้อมูลจากหน้าเว็บ ThaiBulkSMS
-api_key = "ใส่ API Key ของคุณที่นี่"
-api_secret = "ใส่ API Secret ของคุณที่นี่"
+api_key = "abLVnvN6jlZq4hCLP1HuaNRUCFbNwy"
+api_secret = "Aue7hCtJYxAR6NltykYSzztEfllE2d"
 
 # 2. ข้อมูลที่จะส่ง
-target_phone = "08XXXXXXXX" # ใส่เบอร์คุณเองเพื่อทดสอบ
+target_phone = "0808276095" # ใส่เบอร์คุณเองเพื่อทดสอบ
 message = "ทดสอบระบบนวัตกรรม: ส่ง SMS ผ่าน API สำเร็จแล้ว!"
 
 # 3. ยิงข้อมูลไปที่ URL ของเขา
@@ -16,7 +16,7 @@ response = requests.post(
     data={
         "msisdn": target_phone,
         "message": message,
-        "sender": "SMS" # หรือชื่อ Sender Name ที่คุณได้รับอนุมัติ
+        "sender": "SMS" # INNOVATION INTERNSHIP
     }
 )
 

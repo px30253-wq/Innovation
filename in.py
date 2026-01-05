@@ -7,8 +7,8 @@ st.write("สถานะ: กำลังเตรียมการส่ง")
 
 # --- 2. ตั้งค่า API (ตรวจสอบเครื่องหมายคำพูด " " ให้ดี) ---
 # ใส่ API Key และ Secret ที่ก๊อปมาจากหน้าเว็บ ThaiBulkSMS
-MY_API_KEY = "abLVnvN6jlZq4hCLP1HuaNRUCFbNwy" 
-MY_API_SECRET = "rk5nmMNWYAp7SHlbHeRT906bKNTO3G"
+MY_API_KEY = "rk5nmMNWYAp7SHlbHeRT906bKNTO3G" 
+MY_API_SECRET = "abLVnvN6jlZq4hCLP1HuaNRUCFbNwy"
 URL = "https://api-v2.thaibulksms.com/sms"
 
 # --- 3. ข้อมูลที่จะส่ง (ตัวอย่างการกรองข้อมูล) ---

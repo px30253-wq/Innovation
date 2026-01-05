@@ -21,9 +21,21 @@ try:
     # ส่งแค่ url กับ data เท่านั้น
     response = requests.post(url, data=payload)
     
-    # ตรวจสอบผลลัพธ์
+   # แทนที่จะใช้ response.json() ทันที ให้ลองแบบนี้
+response = requests.post(url, data=payload)
+
+# 1. เช็ค Status Code (ควรเป็น 200 หรือ 201)
+st.write(f"Status Code: {response.status_code}")
+
+# 2. เช็คเนื้อหาที่ส่งกลับมาจริงๆ (แบบข้อความธรรมดา)
+st.write(f"Response Text: {response.text}")
+
+# 3. ถ้าเป็น JSON ค่อยแปลง
+try:
     result = response.json()
-    st.write(result)
+    st.json(result)
+except:
+    st.error("API ไม่ได้ส่งข้อมูลกลับมาเป็น JSON")
     
 except Exception as e:
     st.error(f"เกิดข้อผิดพลาด: {e}")

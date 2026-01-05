@@ -37,5 +37,4 @@ try:
 except:
     st.error("API ไม่ได้ส่งข้อมูลกลับมาเป็น JSON")
     
-except Exception as e:
-    st.error(f"เกิดข้อผิดพลาด: {e}")
+

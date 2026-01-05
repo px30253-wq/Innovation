@@ -6,8 +6,8 @@ from email.mime.multipart import MIMEMultipart
 st.title("ระบบแจ้งเตือนนวัตกรรมผ่าน Email")
 
 # 1. ตั้งค่าการส่ง (แก้ไขตรงนี้)
-SENDER_EMAIL = "sd9268102@gmail.com
-"  # เมลของคุณ
+SENDER_EMAIL = "sd9268102@gmail.com"
+
 APP_PASSWORD = "pczdwxidblvxitnq"    # รหัส 16 หลักที่ได้จาก Google
 RECEIVER_EMAIL = "px30253@gmail.com" # เมลของพนักงานที่จะส่งไปหา
 

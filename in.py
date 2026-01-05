@@ -9,7 +9,7 @@ st.write("สถานะ: กำลังเตรียมการส่ง")
 # ใส่ API Key และ Secret ที่ก๊อปมาจากหน้าเว็บ ThaiBulkSMS
 MY_API_KEY = "abLVnvN6jlZq4hCLP1HuaNRUCFbNwy" 
 MY_API_SECRET = "Aue7hCtJYxAR6NltykYSzztEfllE2d"
-URL = "https://api.thaibulksms.com/v2/sms"
+URL = "https://api-v2.thaibulksms.com/sms"
 
 # --- 3. ข้อมูลที่จะส่ง (ตัวอย่างการกรองข้อมูล) ---
 # ในอนาคตคุณสามารถเปลี่ยนเบอร์และข้อความตามไฟล์ Excel ได้

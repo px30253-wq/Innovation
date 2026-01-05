@@ -77,27 +77,26 @@ if uploaded_file:
             
             if st.button("ส่งข้อมูลเข้า LINE ทั้งหมด"):
                 success_count = 0
-                total_items = len(final_df) # นับจำนวนทั้งหมด
-                progress_bar = st.progress(0.0) # เริ่มที่ 0.0
+                total_items = len(final_df)
+                progress_bar = st.progress(0.0)
                 
-                for index, row in final_df.iterrows():
-                    # ... (โค้ดส่งข้อความเดิมของคุณ) ...
+                # ใช้ enumerate เพื่อให้ได้เลขลำดับ 0, 1, 2... ที่แน่นอน
+                for i, (idx, row) in enumerate(final_df.iterrows()):
+                    # --- ส่วนส่ง LINE (เหมือนเดิม) ---
+                    msg = (f"⚠️ รายงานพัสดุเสีย!\n"
+                           f"📦 ID: {row['Parcel ID']}\n"
+                           f"📍 สายส่ง: {row['TourID']}")
                     
-                    # คำนวณความคืบหน้าให้เป็นค่าระหว่าง 0.0 - 1.0
-                    current_progress = (index + 1) / total_items
-                    progress_bar.progress(float(current_progress))
-                    
-                    # (อาจจะใส่ time.sleep(0.1) เล็กน้อยเพื่อให้เห็นแถบวิ่ง)
-                    
-                    # เรียกฟังก์ชันส่ง LINE
                     response = send_line_push(msg)
-                    
                     if response.status_code == 200:
                         success_count += 1
                     
-                    # อัปเดต Progress Bar
-                    progress_value = (index + 1) / len(final_df)
-                    progress_bar.progress(float(progress_value))
+                    # --- คำนวณ Progress แบบปลอดภัย (0.0 ถึง 1.0) ---
+                    current_step = i + 1
+                    percent_complete = current_step / total_items
+                    
+                    # บังคับให้ไม่เกิน 1.0 เผื่อกันพลาด
+                    progress_bar.progress(min(float(percent_complete), 1.0))
                 
                 st.balloons()
                 st.success(f"ส่งเข้า LINE สำเร็จแล้ว {success_count} รายการ!")

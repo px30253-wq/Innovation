@@ -8,7 +8,7 @@ import json
 # 1. ตั้งค่า LINE Messaging API (ใส่รหัสของคุณตรงนี้)
 # ==========================================
 LINE_ACCESS_TOKEN = "ztDjzTNBkelWGloIlOw+WTGcSRlopY5QQljoxrSD13rHOQ7rD8iMAzodBppKH3tkUX7wKAx2cBveWCi/xWG8NODcXPfmLUPWAGZqUDOYy19dTLUqYPX+xaFMPeNf5s32ezrfcHK9XpLd5swV0t6jBAdB04t89/1O/w1cDnyilFU="
-USER_ID = "0981183684" 
+USER_ID = "U398d18e426987b0e189f434ebd941610" 
 
 def send_line_push(message_text):
     """ฟังก์ชันสำหรับส่งข้อความผ่าน LINE Messaging API"""

@@ -67,7 +67,7 @@ if uploaded_file:
             final_df.columns = ['Parcel ID', 'Failure Reason', 'Next Delivery Date', 'TourID']
 
             st.success(f"✅ พบรายการพัสดุเสียทั้งหมด {len(final_df)} รายการ สำหรับวันที่ {tomorrow_str}")
-            st.dataframe(final_df, use_container_width=True)
+            st.dataframe(final_df, width='stretch')
 
             # ==========================================
             # 4. ส่วนการส่ง LINE

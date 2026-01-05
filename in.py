@@ -1,56 +1,41 @@
 import streamlit as st
 import requests
 
-# --- 1. ส่วนหัวของโปรแกรม ---
-st.title("ระบบส่ง SMS แจ้งเตือนพนักงาน (Innovation)")
-st.write("สถานะ: กำลังเตรียมการส่ง")
+# 1. ใส่รหัสของคุณตรงนี้ (ตรวจสอบว่าไม่มีตัวอักษร " หรือ ' ปนในรหัส)
+MY_API_KEY = "abLVnvN6jlZq4hCLP1HuaNRUCFbNwy".strip()
+MY_API_SECRET = "cfOnXTjw0Yes2CujCiLOyNHAlhHvGF".strip()
+URL = "https://api.thaibulksms.com/v2/sms"
 
-# --- 2. ตั้งค่า API (ตรวจสอบเครื่องหมายคำพูด " " ให้ดี) ---
-# ใส่ API Key และ Secret ที่ก๊อปมาจากหน้าเว็บ ThaiBulkSMS
-MY_API_KEY = "rk5nmMNWYAp7SHlbHeRT906bKNTO3G" 
-MY_API_SECRET = "cfOnXTjw0Yes2CujCiLOyNHAlhHvGF"
-URL = "https://api-v2.thaibulksms.com/sms"
-
-# --- 3. ข้อมูลที่จะส่ง (ตัวอย่างการกรองข้อมูล) ---
-# ในอนาคตคุณสามารถเปลี่ยนเบอร์และข้อความตามไฟล์ Excel ได้
-# แก้ไขในไฟล์ in.py ตรงส่วน payload
-# แก้ไขในไฟล์ in.py ตรงส่วน payload
+# 2. ข้อมูลผู้รับ
 payload = {
-    "api_key": MY_API_KEY.strip(),      # ตัดช่องว่างออก
-    "api_secret": MY_API_SECRET.strip(), # ตัดช่องว่างออก
-    "msisdn": "0808276095", 
-    "message": "ทดสอบระบบ",
-    "sender": "SMS" 
+    "msisdn": "0808276095", # ใส่เบอร์จริง
+    "message": "ทดสอบระบบนวัตกรรม",
+    "sender": "SMS"
 }
-            
-# --- 4. ส่วนส่งข้อมูลและตรวจสอบ Error (โครงสร้างที่ถูกต้อง) ---
+
+# 3. การส่งแบบระบุ Header ชัดเจน (วิธีนี้ช่วยแก้ปัญหา 401 ได้ดีที่สุด)
 try:
-    # ส่งข้อมูลไปยัง API
-    response = requests.post(URL, data=payload)
+    # การส่งแบบ x-www-form-urlencoded พร้อมส่งรหัสผ่าน data
+    data_to_send = {
+        "api_key": MY_API_KEY,
+        "api_secret": MY_API_SECRET,
+        "msisdn": payload["msisdn"],
+        "message": payload["message"],
+        "sender": payload["sender"]
+    }
     
-    # แสดงสถานะการตอบกลับ
-    st.subheader("ผลการทำงาน")
+    # ลองส่งแบบกำหนด headers ให้ระบบรู้ว่าเป็น Form data
+    headers = {'Content-Type': 'application/x-www-form-urlencoded'}
+    
+    response = requests.post(URL, data=data_to_send, headers=headers)
+
     st.write(f"รหัสสถานะ (Status Code): {response.status_code}")
     
-    # พยายามอ่านค่าเป็น JSON
     try:
         result = response.json()
-        st.json(result) # โชว์รายละเอียดถ้าส่งสำเร็จ
-        
-        if response.status_code == 201 or response.status_code == 200:
-            st.success("ส่งข้อความสำเร็จแล้ว!")
-        else:
-            st.warning("API ตอบกลับมาแต่ส่งไม่สำเร็จ ตรวจสอบยอดเงินหรือความถูกต้องของเบอร์โทร")
-            
+        st.json(result)
     except:
-        # ถ้า API ไม่ส่ง JSON กลับมา ให้โชว์เป็นข้อความธรรมดาแทน
-        st.error("API ไม่ได้ส่งข้อมูลรูปแบบ JSON กลับมา")
-        st.write("ข้อความจากระบบ:", response.text)
+        st.write("Response Text:", response.text)
 
 except Exception as e:
-    # ถ้าคำสั่ง requests.post พังตั้งแต่แรก (เช่น เน็ตหลุด หรือ Syntax ผิด)
-    st.error(f"ระบบขัดข้อง: {e}")
-
-# --- 5. ปุ่มสำหรับรันซ้ำ ---
-if st.button("กดเพื่อลองส่งอีกครั้ง"):
-    st.rerun()
+    st.error(f"เกิดข้อผิดพลาดที่ตัวโค้ด: {e}")

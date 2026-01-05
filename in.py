@@ -14,14 +14,15 @@ URL = "https://api-v2.thaibulksms.com/sms"
 # --- 3. ข้อมูลที่จะส่ง (ตัวอย่างการกรองข้อมูล) ---
 # ในอนาคตคุณสามารถเปลี่ยนเบอร์และข้อความตามไฟล์ Excel ได้
 # แก้ไขในไฟล์ in.py ตรงส่วน payload
+# แก้ไขในไฟล์ in.py ตรงส่วน payload
 payload = {
-    "api_key": abLVnvN6jlZq4hCLP1HuaNRUCFbNwy.strip(),      # ตัดช่องว่างออก
-    "api_secret": Aue7hCtJYxAR6NltykYSzztEfllE2d.strip(), # ตัดช่องว่างออก
+    "api_key": MY_API_KEY.strip(),      # ตัดช่องว่างออก
+    "api_secret": MY_API_SECRET.strip(), # ตัดช่องว่างออก
     "msisdn": "0808276095", 
     "message": "ทดสอบระบบ",
     "sender": "SMS" 
-}            
-
+}
+            
 # --- 4. ส่วนส่งข้อมูลและตรวจสอบ Error (โครงสร้างที่ถูกต้อง) ---
 try:
     # ส่งข้อมูลไปยัง API

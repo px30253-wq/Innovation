@@ -9,10 +9,11 @@ URL = "https://api-v2.thaibulksms.com/sms"
 st.title("ระบบแจ้งเตือน SMS")
 
 payload = {
-    "msisdn": "0808276095",  # ต้องเป็นเบอร์จริง
-    "message": "ทดสอบครั้งสุดท้ายก่อนเปลี่ยนไปใช้เมล",
-    "sender": "SMS"
+    "msisdn": "0808276095",
+    "message": "ทดสอบระบบแจ้งเตือน",
+    "sender": "SMS"   # ✅ ใช้ค่านี้ก่อน
 }
+
 
 headers = {
     "Content-Type": "application/x-www-form-urlencoded"

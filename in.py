@@ -9,8 +9,8 @@ url = "https://api.thaibulksms.com/v2/sms"
 
 # 2. เอา API Key/Secret มาใส่ไว้ใน payload แทน
 payload = {
-    "api_key": abLVnvN6jlZq4hCLP1HuaNRUCFbNwy,      # ใส่ตรงนี้
-    "api_secret": Aue7hCtJYxAR6NltykYSzztEfllE2d, # ใส่ตรงนี้
+    "api_key": abLVnvN6jlZq4hCLP1HuaNRUCFbNwy,      
+    "api_secret": Aue7hCtJYxAR6NltykYSzztEfllE2d, 
     "msisdn": "0808276095",      # เบอร์พนักงาน/เบอร์ทดสอบ
     "message": "ทดสอบส่งข้อความภาษาไทย", 
     "sender": "SMS" 

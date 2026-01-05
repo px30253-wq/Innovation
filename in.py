@@ -4,7 +4,7 @@ import requests
 # 1. ใส่รหัสของคุณตรงนี้
 MY_API_KEY = "abLVnvN6jlZq4hCLP1HuaNRUCFbNwy".strip()
 MY_API_SECRET = "cfOnXTjw0Yes2CujCiLOyNHAlhHvGF".strip()
-URL = "https://api.thaibulksms.com/v2/sms"
+URL = "https://api-v2.thaibulksms.com/sms"
 
 st.title("ระบบแจ้งเตือน SMS")
 

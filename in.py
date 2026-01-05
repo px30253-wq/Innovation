@@ -18,23 +18,23 @@ payload = {
 
 # 3. ตอนส่ง requests.post ไม่ต้องใส่ auth=(...) แล้ว
 try:
-    # ส่งแค่ url กับ data เท่านั้น
+   # 1. เตรียมข้อมูลก่อน (อยู่นอก try)
+url = "https://api.thaibulksms.com/v2/sms"
+payload = { ... } 
+
+# 2. เริ่มต้นกลุ่มคำสั่งตรวจสอบ
+try:
+    # คำสั่งที่อาจจะพัง ให้เอามาไว้ข้างในนี้
     response = requests.post(url, data=payload)
     
-   # แทนที่จะใช้ response.json() ทันที ให้ลองแบบนี้
-response = requests.post(url, data=payload)
-
-# 1. เช็ค Status Code (ควรเป็น 200 หรือ 201)
-st.write(f"Status Code: {response.status_code}")
-
-# 2. เช็คเนื้อหาที่ส่งกลับมาจริงๆ (แบบข้อความธรรมดา)
-st.write(f"Response Text: {response.text}")
-
-# 3. ถ้าเป็น JSON ค่อยแปลง
-try:
+    st.write(f"Status Code: {response.status_code}")
+    st.write(f"Response Text: {response.text}")
+    
+    # พยายามแปลงเป็น JSON
     result = response.json()
     st.json(result)
-except:
-    st.error("API ไม่ได้ส่งข้อมูลกลับมาเป็น JSON")
-    
+
+except Exception as e:
+    # ถ้าข้างบนพัง ให้มาทำตรงนี้
+    st.error(f"เกิดข้อผิดพลาด: {e}")
 

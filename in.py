@@ -1,40 +1,41 @@
 import streamlit as st
-import requests
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 
-# 1. ใส่รหัสของคุณตรงนี้
-MY_API_KEY = "abLVnvN6jlZq4hCLP1HuaNRUCFbNwy".strip()
-MY_API_SECRET = "cfOnXTjw0Yes2CujCiLOyNHAlhHvGF".strip()
-URL = "https://api-v2.thaibulksms.com/sms"
+st.title("ระบบแจ้งเตือนนวัตกรรมผ่าน Email")
 
-st.title("ระบบแจ้งเตือน SMS")
+# 1. ตั้งค่าการส่ง (แก้ไขตรงนี้)
+SENDER_EMAIL = "sd9268102@gmail.com
+"  # เมลของคุณ
+APP_PASSWORD = "pczd wxid blvx itnq"    # รหัส 16 หลักที่ได้จาก Google
+RECEIVER_EMAIL = "px30253@gmail.com" # เมลของพนักงานที่จะส่งไปหา
 
-# 2. ข้อมูลที่จะส่ง
-payload = {
-    "msisdn": "0808276095",  # ใส่เบอร์โทรจริงของคุณเพื่อทดสอบ
-    "message": "ทดสอบครั้งสุดท้ายก่อนเปลี่ยนไปใช้เมล",
-    "sender": "SMS"
-}
+# 2. ฟอร์มกรอกข้อความ
+subject = st.text_input("หัวข้ออีเมล", "แจ้งเตือนงานนวัตกรรม")
+message_body = st.text_area("รายละเอียด", "มีงานใหม่รอการตรวจสอบ...")
 
-# 3. ส่งรหัสผ่าน Header (วิธีมาตรฐาน)
-headers = {
-    "Content-Type": "application/x-www-form-urlencoded",
-    "api-key": MY_API_KEY,
-    "api-secret": MY_API_SECRET
-}
-
-if st.button("ลองส่ง SMS อีกครั้ง"):
+if st.button("ส่งอีเมลเดี๋ยวนี้"):
     try:
-        # ส่งแบบกำหนด headers แยกต่างหาก
-        response = requests.post(URL, data=payload, headers=headers)
+        # เตรียมเนื้อหาเมล
+        msg = MIMEMultipart()
+        msg['From'] = SENDER_EMAIL
+        msg['To'] = RECEIVER_EMAIL
+        msg['Subject'] = subject
+        msg.attach(MIMEText(message_body, 'plain'))
+
+        # เชื่อมต่อกับ Server ของ Google
+        server = smtplib.SMTP('smtp.gmail.com', 587)
+        server.starttls() # เข้ารหัสความปลอดภัย
+        server.login(SENDER_EMAIL, APP_PASSWORD) # ล็อกอิน
         
-        st.write(f"Status Code: {response.status_code}")
-        result = response.json()
-        st.json(result)
-        
-        if response.status_code in [200, 201]:
-            st.success("สำเร็จแล้ว! ข้อความกำลังไปที่มือถือ")
-        else:
-            st.error("ยังไม่สำเร็จ... ลองดูเหตุผลในกรอบสีดำด้านบน")
-            
+        # สั่งส่ง
+        text = msg.as_string()
+        server.sendmail(SENDER_EMAIL, RECEIVER_EMAIL, text)
+        server.quit()
+
+        st.success(f"✅ ส่งอีเมลไปที่ {RECEIVER_EMAIL} สำเร็จแล้ว!")
+
     except Exception as e:
-        st.error(f"Error: {e}")
+        st.error(f"❌ ส่งไม่สำเร็จเนื่องจาก: {e}")
+        st.info("คำแนะนำ: ตรวจสอบว่าใช้ App Password 16 หลักที่ถูกต้อง และเปิด 2-Step Auth หรือยัง")

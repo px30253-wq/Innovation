@@ -1,41 +1,40 @@
 import streamlit as st
 import requests
 
-# 1. ใส่รหัสของคุณตรงนี้ (ตรวจสอบว่าไม่มีตัวอักษร " หรือ ' ปนในรหัส)
+# 1. ใส่รหัสของคุณตรงนี้
 MY_API_KEY = "abLVnvN6jlZq4hCLP1HuaNRUCFbNwy".strip()
 MY_API_SECRET = "cfOnXTjw0Yes2CujCiLOyNHAlhHvGF".strip()
-URL = "https://api-v2.thaibulksms.com/sms"
+URL = "https://api.thaibulksms.com/v2/sms"
 
-# 2. ข้อมูลผู้รับ
+st.title("ระบบแจ้งเตือน SMS")
+
+# 2. ข้อมูลที่จะส่ง
 payload = {
-    "msisdn": "0808276095", # ใส่เบอร์จริง
-    "message": "ทดสอบระบบนวัตกรรม",
+    "msisdn": "0808276095",  # ใส่เบอร์โทรจริงของคุณเพื่อทดสอบ
+    "message": "ทดสอบครั้งสุดท้ายก่อนเปลี่ยนไปใช้เมล",
     "sender": "SMS"
 }
 
-# 3. การส่งแบบระบุ Header ชัดเจน (วิธีนี้ช่วยแก้ปัญหา 401 ได้ดีที่สุด)
-try:
-    # การส่งแบบ x-www-form-urlencoded พร้อมส่งรหัสผ่าน data
-    data_to_send = {
-        "api_key": MY_API_KEY,
-        "api_secret": MY_API_SECRET,
-        "msisdn": payload["msisdn"],
-        "message": payload["message"],
-        "sender": payload["sender"]
-    }
-    
-    # ลองส่งแบบกำหนด headers ให้ระบบรู้ว่าเป็น Form data
-    headers = {'Content-Type': 'application/x-www-form-urlencoded'}
-    
-    response = requests.post(URL, data=data_to_send, headers=headers)
+# 3. ส่งรหัสผ่าน Header (วิธีมาตรฐาน)
+headers = {
+    "Content-Type": "application/x-www-form-urlencoded",
+    "api-key": MY_API_KEY,
+    "api-secret": MY_API_SECRET
+}
 
-    st.write(f"รหัสสถานะ (Status Code): {response.status_code}")
-    
+if st.button("ลองส่ง SMS อีกครั้ง"):
     try:
+        # ส่งแบบกำหนด headers แยกต่างหาก
+        response = requests.post(URL, data=payload, headers=headers)
+        
+        st.write(f"Status Code: {response.status_code}")
         result = response.json()
         st.json(result)
-    except:
-        st.write("Response Text:", response.text)
-
-except Exception as e:
-    st.error(f"เกิดข้อผิดพลาดที่ตัวโค้ด: {e}")
+        
+        if response.status_code in [200, 201]:
+            st.success("สำเร็จแล้ว! ข้อความกำลังไปที่มือถือ")
+        else:
+            st.error("ยังไม่สำเร็จ... ลองดูเหตุผลในกรอบสีดำด้านบน")
+            
+    except Exception as e:
+        st.error(f"Error: {e}")

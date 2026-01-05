@@ -16,9 +16,9 @@ URL = "https://api-v2.thaibulksms.com/sms"
 payload = {
     "api_key": "abLVnvN6jlZq4hCLP1HuaNRUCFbNwy",      
     "api_secret": "Aue7hCtJYxAR6NltykYSzztEfllE2d", 
-    "msisdn": "0808276095",      # ใส่เบอร์โทรพนักงาน (ตัวเลขล้วน)
-    "message": "ทดสอบ: งานพัสดุหมายเลข #123 ต้องส่งใหม่วันพรุ่งนี้", # ภาษาไทยได้
-    "sender": "SMS"              # ถ้ายังไม่ได้ขอชื่อตัวเอง ให้ใช้ SMS ไปก่อน
+    "msisdn": "0808276095",     
+    "message": "ทดสอบ: งานพัสดุหมายเลข #123 ต้องส่งใหม่วันพรุ่งนี้", 
+    "sender": "SMS"              
 }
 
 # --- 4. ส่วนส่งข้อมูลและตรวจสอบ Error (โครงสร้างที่ถูกต้อง) ---

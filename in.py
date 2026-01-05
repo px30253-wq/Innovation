@@ -17,7 +17,7 @@ URL = "https://api-v2.thaibulksms.com/sms"
 payload = {
     "api_key": abLVnvN6jlZq4hCLP1HuaNRUCFbNwy.strip(),      # ตัดช่องว่างออก
     "api_secret": Aue7hCtJYxAR6NltykYSzztEfllE2d.strip(), # ตัดช่องว่างออก
-    "msisdn": "08XXXXXXXX", 
+    "msisdn": "0808276095", 
     "message": "ทดสอบระบบ",
     "sender": "SMS" 
 }            

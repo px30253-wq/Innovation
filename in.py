@@ -22,8 +22,19 @@ def send_line_message(message):
     response = requests.post(url, headers=headers, data=json.dumps(payload))
     return response
 
-# --- ส่วนของระบบเดิมของคุณ (ตัดมาเฉพาะส่วนแสดงผล) ---
-# ... (โค้ดส่วนอัปโหลดและกรองข้อมูลเหมือนเดิม) ...
+import streamlit as st
+import pandas as pd
+
+# --- ส่วนต้นของไฟล์ ---
+st.title("ระบบกรองข้อมูล")
+
+# 1. ต้องสร้างตัวแปรขึ้นมาก่อน (ห้ามลบบรรทัดนี้)
+uploaded_file = st.file_uploader("อัปโหลดไฟล์", type=["csv", "xlsx", "xls"])
+
+# 2. จากนั้นค่อยเรียกใช้ (บรรทัดที่ 28 ของคุณ)
+if uploaded_file:
+    st.write("ไฟล์ถูกโหลดเข้าระบบแล้ว")
+    # โค้ดส่วนอ่านไฟล์และส่ง LINE ของคุณจะอยู่ตรงนี้...
 
 if uploaded_file:
     # ... (ส่วนกรองข้อมูลจนได้ final_df) ...

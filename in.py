@@ -4,9 +4,7 @@ from datetime import datetime, timedelta
 import requests
 import json
 
-# ==========================================
-# 1. ตั้งค่า LINE Messaging API (ใส่รหัสของคุณตรงนี้)
-# ==========================================
+
 LINE_ACCESS_TOKEN = "ztDjzTNBkelWGloIlOw+WTGcSRlopY5QQljoxrSD13rHOQ7rD8iMAzodBppKH3tkUX7wKAx2cBveWCi/xWG8NODcXPfmLUPWAGZqUDOYy19dTLUqYPX+xaFMPeNf5s32ezrfcHK9XpLd5swV0t6jBAdB04t89/1O/w1cDnyilFU="
 USER_ID = "U398d18e426987b0e189f434ebd941610" 
 
@@ -29,16 +27,12 @@ def send_line_push(message_text):
     res = requests.post(url, headers=headers, data=json.dumps(payload))
     return res
 
-# ==========================================
-# 2. ตั้งค่าหน้าเว็บ Streamlit
-# ==========================================
+
 st.set_page_config(page_title="INNOVATION LINE ALERT", layout="wide")
 st.title("📱 ระบบกรองข้อมูลและแจ้งเตือนผ่าน LINE")
 st.info("อัปโหลดไฟล์เพื่อกรองรายการ DELIVERY_FAILED ของวันพรุ่งนี้")
 
-# ==========================================
-# 3. ส่วนการอัปโหลดและประมวลผลไฟล์
-# ==========================================
+
 uploaded_file = st.file_uploader("เลือกไฟล์ Inventory Report (.csv หรือ .xlsx)", type=["csv", "xlsx", "xls"])
 
 if uploaded_file:

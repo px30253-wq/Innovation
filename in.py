@@ -56,9 +56,9 @@ if uploaded_file:
 
         if not filtered_df.empty:
             # เลือกคอลัมน์ที่จำเป็น (B, E, F, P)
-            display_cols = [1, 4, 5, 15]
+            display_cols = [1, 4, 5, 13, 15]
             final_df = filtered_df.iloc[:, display_cols]
-            final_df.columns = ['Parcel ID', 'Failure Reason', 'Next Delivery Date', 'TourID']
+            final_df.columns = ['Parcel ID', 'Failure Reason', 'Next Delivery Date','Pickup Customer Name', 'TourID']
 
             st.success(f"✅ พบรายการพัสดุเสียทั้งหมด {len(final_df)} รายการ สำหรับวันที่ {tomorrow_str}")
             st.dataframe(final_df, width='stretch')
@@ -79,6 +79,7 @@ if uploaded_file:
                     # --- ส่วนส่ง LINE (เหมือนเดิม) ---
                     msg = (f"⚠️ รายงานพัสดุที่ต้องนำส่งอีกครั้ง!\n"
                            f"📦 ID: {row['Parcel ID']}\n"
+                           f"👤 งาน: {row['Pickup Customer Name']}\n"
                            f"📍 สายส่ง: {row['TourID']}")
                     
                     response = send_line_push(msg)

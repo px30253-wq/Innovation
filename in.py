@@ -80,7 +80,7 @@ if uploaded_file:
                     msg = (f"⚠️ รายงานพัสดุที่ต้องนำส่งอีกครั้ง!\n"
                            f"📦 ID: {row['Parcel ID']}\n"
                            f"👤 งาน: {row['Pickup Customer Name']}\n"
-                           f"📍 สายส่ง: {row['TourID']}")
+                           f"📍 Courier ID: {row['TourID']}")
                     
                     response = send_line_push(msg)
                     if response.status_code == 200:

@@ -37,17 +37,17 @@ uploaded_file = st.file_uploader("เลือกไฟล์ Inventory Report (
 
 if uploaded_file:
     try:
-        # อ่านไฟล์ข้อมูล
+        
         if uploaded_file.name.endswith('.csv'):
             df = pd.read_csv(uploaded_file, encoding='utf-8-sig')
         else:
             df = pd.read_excel(uploaded_file)
 
-        # เตรียมวันที่วันพรุ่งนี้ (ตามรูปแบบในไฟล์ของคุณ)
+       
         tomorrow = datetime.now() + timedelta(days=1)
         tomorrow_str = tomorrow.strftime('%d-%b-%Y') 
 
-        # กรองข้อมูล (Parcel Status อยู่คอลัมน์ที่ 4, Next Delivery Date อยู่คอลัมน์ที่ 6)
+        
         col_status = df.columns[3]
         col_date = df.columns[5]
         
@@ -55,7 +55,7 @@ if uploaded_file:
         filtered_df = df[mask].copy()
 
         if not filtered_df.empty:
-            # เลือกคอลัมน์ที่จำเป็น (B, E, F, P)
+           
             display_cols = [1, 4, 5, 13, 15]
             final_df = filtered_df.iloc[:, display_cols]
             final_df.columns = ['Parcel ID', 'Failure Reason', 'Next Delivery Date','Pickup Customer Name', 'TourID']
@@ -63,9 +63,7 @@ if uploaded_file:
             st.success(f"✅ พบรายการพัสดุเสียทั้งหมด {len(final_df)} รายการ สำหรับวันที่ {tomorrow_str}")
             st.dataframe(final_df, width='stretch')
 
-            # ==========================================
-            # 4. ส่วนการส่ง LINE
-            # ==========================================
+            
             st.divider()
             st.subheader("🚀 ส่งการแจ้งเตือน")
             
@@ -74,9 +72,9 @@ if uploaded_file:
                 total_items = len(final_df)
                 progress_bar = st.progress(0.0)
                 
-                # ใช้ enumerate เพื่อให้ได้เลขลำดับ 0, 1, 2... ที่แน่นอน
+                
                 for i, (idx, row) in enumerate(final_df.iterrows()):
-                    # --- ส่วนส่ง LINE (เหมือนเดิม) ---
+                    
                     msg = (f"⚠️ รายงานพัสดุที่ต้องนำส่งอีกครั้ง!\n"
                            f"📦 ID: {row['Parcel ID']}\n"
                            f"👤 งาน: {row['Pickup Customer Name']}\n"
@@ -86,11 +84,11 @@ if uploaded_file:
                     if response.status_code == 200:
                         success_count += 1
                     
-                    # --- คำนวณ Progress แบบปลอดภัย (0.0 ถึง 1.0) ---
+                    
                     current_step = i + 1
                     percent_complete = current_step / total_items
                     
-                    # บังคับให้ไม่เกิน 1.0 เผื่อกันพลาด
+                    
                     progress_bar.progress(min(float(percent_complete), 1.0))
                 
                 st.balloons()

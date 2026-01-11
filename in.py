@@ -29,7 +29,7 @@ def send_line_push(message_text):
 
 
 st.set_page_config(page_title="INNOVATION LINE ALERT", layout="wide")
-st.title("📱 ระบบกรองข้อมูลและแจ้งเตือนผ่าน LINE")
+st.title("📦 ระบบกรองข้อมูลและแจ้งเตือนผ่าน LINE")
 st.info("อัปโหลดไฟล์เพื่อกรองรายการ DELIVERY_FAILED ของวันพรุ่งนี้")
 
 
@@ -77,8 +77,8 @@ if uploaded_file:
                     
                     msg = (f"⚠️ รายงานพัสดุที่ต้องนำส่งอีกครั้ง!\n"
                            f"📦 ID: {row['Parcel ID']}\n"
-                           f"👤 งาน: {row['Pickup Customer Name']}\n"
-                           f"📍 Courier ID: {row['TourID']}")
+                           f"📍 Customer Name: {row['Pickup Customer Name']}\n"
+                           f"👤 Courier ID: {row['TourID']}")
                     
                     response = send_line_push(msg)
                     if response.status_code == 200:

@@ -1,9 +1,17 @@
 import streamlit as st
+hide_st_style = """
+            <style>
+            #MainMenu {visibility: hidden;}
+            footer {visibility: hidden;}
+            header {visibility: hidden;}
+            </style>
+            """
+st.markdown(hide_st_style, unsafe_allow_html=True)
+
 import pandas as pd
 from datetime import datetime, timedelta
 import requests
 import json
-
 
 LINE_ACCESS_TOKEN = "ztDjzTNBkelWGloIlOw+WTGcSRlopY5QQljoxrSD13rHOQ7rD8iMAzodBppKH3tkUX7wKAx2cBveWCi/xWG8NODcXPfmLUPWAGZqUDOYy19dTLUqYPX+xaFMPeNf5s32ezrfcHK9XpLd5swV0t6jBAdB04t89/1O/w1cDnyilFU="
 USER_ID = "Cd344d34fa9507060a68cf386aa3b6b4b" 
@@ -27,11 +35,9 @@ def send_line_push(message_text):
     res = requests.post(url, headers=headers, data=json.dumps(payload))
     return res
 
-
 st.set_page_config(page_title="INNOVATION LINE ALERT", layout="wide")
 st.title("📦 ระบบกรองข้อมูลและแจ้งเตือนผ่าน LINE")
 st.info("อัปโหลดไฟล์เพื่อกรองรายการ DELIVERY_FAILED ของวันพรุ่งนี้")
-
 
 uploaded_file = st.file_uploader("เลือกไฟล์ Inventory Report (.csv หรือ .xlsx)", type=["csv", "xlsx", "xls"])
 
@@ -47,7 +53,6 @@ if uploaded_file:
         tomorrow = datetime.now() + timedelta(days=1)
         tomorrow_str = tomorrow.strftime('%d-%b-%Y') 
 
-        
         col_status = df.columns[3]
         col_date = df.columns[5]
         
@@ -72,8 +77,7 @@ if uploaded_file:
                 total_items = len(final_df)
                 progress_bar = st.progress(0.0)
                 
-                
-                for i, (idx, row) in enumerate(final_df.iterrows()):
+              for i, (idx, row) in enumerate(final_df.iterrows()):
                     
                     msg = (f"⚠️ รายงานพัสดุที่ต้องนำส่งอีกครั้ง!\n"
                            f"📦 ID: {row['Parcel ID']}\n"
@@ -84,10 +88,8 @@ if uploaded_file:
                     if response.status_code == 200:
                         success_count += 1
                     
-                    
                     current_step = i + 1
                     percent_complete = current_step / total_items
-                    
                     
                     progress_bar.progress(min(float(percent_complete), 1.0))
                 

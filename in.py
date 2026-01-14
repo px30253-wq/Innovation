@@ -60,7 +60,7 @@ if uploaded_file:
             final_df = filtered_df.iloc[:, display_cols]
             final_df.columns = ['Parcel ID', 'Failure Reason', 'Next Delivery Date','Pickup Customer Name', 'TourID']
 
-            st.success(f"✅ พบรายการพัสดุเสียทั้งหมด {len(final_df)} รายการ สำหรับวันที่ {tomorrow_str}")
+            st.success(f"✅ พบรายการพัสดุที่ต้องนำส่งอีกครั้งทั้งหมด {len(final_df)} รายการ สำหรับวันที่ {tomorrow_str}")
             st.dataframe(final_df, width='stretch')
 
             

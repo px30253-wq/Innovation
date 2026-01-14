@@ -6,7 +6,7 @@ import json
 
 # --- 1. ดึงค่าจาก Secrets (ต้องชื่อตรงกับในหน้าเว็บ Streamlit) ---
 try:
-    LINE_ACCESS_TOKEN = st.secrets["ztDjzTNBkelWGloIlOw+WTGcSRlopY5QQljoxrSD13rHOQ7rD8iMAzodBppKH3tkUX7wKAx2cBveWCi/xWG8NODcXPfmLUPWAGZqUDOYy19dTLUqYPX+xaFMPeNf5s32ezrfcHK9XpLd5swV0t6jBAdB04t89/1O/w1cDnyilFU="]
+    LINE_TOKEN = st.secrets["ztDjzTNBkelWGloIlOw+WTGcSRlopY5QQljoxrSD13rHOQ7rD8iMAzodBppKH3tkUX7wKAx2cBveWCi/xWG8NODcXPfmLUPWAGZqUDOYy19dTLUqYPX+xaFMPeNf5s32ezrfcHK9XpLd5swV0t6jBAdB04t89/1O/w1cDnyilFU="]
     USER_ID = st.secrets["Cd344d34fa9507060a68cf386aa3b6b4b"]
 except KeyError:
     st.error("❌ ไม่พบข้อมูลใน Secrets! กรุณาตรวจสอบการตั้งค่าใน Streamlit Cloud")

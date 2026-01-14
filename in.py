@@ -3,6 +3,8 @@ import pandas as pd
 from datetime import datetime, timedelta
 import requests
 import json
+
+# --- ส่วนซ่อนเมนูเพื่อความปลอดภัย (แม้จะเป็น Public) ---
 hide_st_style = """
             <style>
             #MainMenu {visibility: hidden;}
@@ -16,7 +18,6 @@ LINE_ACCESS_TOKEN = "ztDjzTNBkelWGloIlOw+WTGcSRlopY5QQljoxrSD13rHOQ7rD8iMAzodBpp
 USER_ID = "Cd344d34fa9507060a68cf386aa3b6b4b" 
 
 def send_line_push(message_text):
-    """ฟังก์ชันสำหรับส่งข้อความผ่าน LINE Messaging API"""
     url = "https://api.line.me/v2/bot/message/push"
     headers = {
         "Content-Type": "application/json",
@@ -24,12 +25,7 @@ def send_line_push(message_text):
     }
     payload = {
         "to": USER_ID,
-        "messages": [
-            {
-                "type": "text",
-                "text": message_text
-            }
-        ]
+        "messages": [{"type": "text", "text": message_text}]
     }
     res = requests.post(url, headers=headers, data=json.dumps(payload))
     return res
@@ -42,13 +38,11 @@ uploaded_file = st.file_uploader("เลือกไฟล์ Inventory Report (
 
 if uploaded_file:
     try:
-        
         if uploaded_file.name.endswith('.csv'):
             df = pd.read_csv(uploaded_file, encoding='utf-8-sig')
         else:
             df = pd.read_excel(uploaded_file)
 
-       
         tomorrow = datetime.now() + timedelta(days=1)
         tomorrow_str = tomorrow.strftime('%d-%b-%Y') 
 
@@ -59,15 +53,13 @@ if uploaded_file:
         filtered_df = df[mask].copy()
 
         if not filtered_df.empty:
-           
             display_cols = [1, 4, 5, 13, 15]
             final_df = filtered_df.iloc[:, display_cols]
             final_df.columns = ['Parcel ID', 'Failure Reason', 'Next Delivery Date','Pickup Customer Name', 'TourID']
 
-            st.success(f"✅ พบรายการพัสดุที่ต้องนำส่งอีกครั้งทั้งหมด {len(final_df)} รายการ สำหรับวันที่ {tomorrow_str}")
-            st.dataframe(final_df, width='stretch')
+            st.success(f"✅ พบรายการพัสดุ {len(final_df)} รายการ สำหรับวันที่ {tomorrow_str}")
+            st.dataframe(final_df, use_container_width=True)
 
-            
             st.divider()
             st.subheader("🚀 ส่งการแจ้งเตือน")
             
@@ -76,11 +68,11 @@ if uploaded_file:
                 total_items = len(final_df)
                 progress_bar = st.progress(0.0)
                 
-              for i, (idx, row) in enumerate(final_df.iterrows()):
-                    
-                    msg = (f"⚠️ รายงานพัสดุที่ต้องนำส่งอีกครั้ง!\n"
+                # แก้ไขการย่อหน้าตรงส่วนนี้
+                for i, (idx, row) in enumerate(final_df.iterrows()):
+                    msg = (f"⚠️ รายงานพัสดุ!\n"
                            f"📦 ID: {row['Parcel ID']}\n"
-                           f"📍 Customer Name: {row['Pickup Customer Name']}\n"
+                           f"📍 Customer: {row['Pickup Customer Name']}\n"
                            f"👤 Courier ID: {row['TourID']}")
                     
                     response = send_line_push(msg)
@@ -89,16 +81,14 @@ if uploaded_file:
                     
                     current_step = i + 1
                     percent_complete = current_step / total_items
-                    
-                    progress_bar.progress(min(float(percent_complete), 1.0))
+                    progress_bar.progress(float(percent_complete))
                 
                 st.balloons()
-                st.success(f"ส่งเข้า LINE สำเร็จแล้ว {success_count} รายการ!")
-                
+                st.success(f"ส่งสำเร็จแล้ว {success_count} รายการ!")
         else:
-            st.warning(f"❌ ไม่พบรายการ DELIVERY_FAILED สำหรับวันที่ {tomorrow_str}")
+            st.warning(f"❌ ไม่พบรายการสำหรับวันที่ {tomorrow_str}")
 
     except Exception as e:
-        st.error(f"เกิดข้อผิดพลาดในการประมวลผล: {e}")
+        st.error(f"เกิดข้อผิดพลาด: {e}")
 else:
     st.write("รอการอัปโหลดไฟล์...")

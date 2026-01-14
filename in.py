@@ -4,17 +4,22 @@ from datetime import datetime, timedelta
 import requests
 import json
 
-# --- ส่วนซ่อนเมนูเพื่อความปลอดภัย (แม้จะเป็น Public) ---
-hide_st_style = """
-            <style>
-            #MainMenu {visibility: hidden;}
-            footer {visibility: hidden;}
-            header {visibility: hidden;}
-            </style>
-            """
-st.markdown(hide_st_style, unsafe_allow_html=True)
-LINE_ACCESS_TOKEN = st.secrets["ztDjzTNBkelWGloIlOw+WTGcSRlopY5QQljoxrSD13rHOQ7rD8iMAzodBppKH3tkUX7wKAx2cBveWCi/xWG8NODcXPfmLUPWAGZqUDOYy19dTLUqYPX+xaFMPeNf5s32ezrfcHK9XpLd5swV0t6jBAdB04t89/1O/w1cDnyilFU="]
-USER_ID = st.secrets["Cd344d34fa9507060a68cf386aa3b6b4b"] 
+# --- 1. ดึงค่าจาก Secrets (ต้องชื่อตรงกับในหน้าเว็บ Streamlit) ---
+try:
+    LINE_ACCESS_TOKEN = st.secrets["ztDjzTNBkelWGloIlOw+WTGcSRlopY5QQljoxrSD13rHOQ7rD8iMAzodBppKH3tkUX7wKAx2cBveWCi/xWG8NODcXPfmLUPWAGZqUDOYy19dTLUqYPX+xaFMPeNf5s32ezrfcHK9XpLd5swV0t6jBAdB04t89/1O/w1cDnyilFU="]
+    USER_ID = st.secrets["Cd344d34fa9507060a68cf386aa3b6b4b"]
+except KeyError:
+    st.error("❌ ไม่พบข้อมูลใน Secrets! กรุณาตรวจสอบการตั้งค่าใน Streamlit Cloud")
+    st.stop()
+
+# --- 2. ซ่อนเมนู View Source เพื่อความปลอดภัย ---
+st.markdown("""
+    <style>
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+    header {visibility: hidden;}
+    </style>
+    """, unsafe_allow_html=True)
 
 def send_line_push(message_text):
     url = "https://api.line.me/v2/bot/message/push"
@@ -31,7 +36,6 @@ def send_line_push(message_text):
 
 st.set_page_config(page_title="INNOVATION LINE ALERT", layout="wide")
 st.title("📦 ระบบกรองข้อมูลและแจ้งเตือนผ่าน LINE")
-st.info("อัปโหลดไฟล์เพื่อกรองรายการ DELIVERY_FAILED ของวันพรุ่งนี้")
 
 uploaded_file = st.file_uploader("เลือกไฟล์ Inventory Report (.csv หรือ .xlsx)", type=["csv", "xlsx", "xls"])
 
@@ -45,9 +49,9 @@ if uploaded_file:
         tomorrow = datetime.now() + timedelta(days=1)
         tomorrow_str = tomorrow.strftime('%d-%b-%Y') 
 
+        # กรองข้อมูล DELIVERY_FAILED ของวันพรุ่งนี้
         col_status = df.columns[3]
         col_date = df.columns[5]
-        
         mask = (df[col_status] == 'DELIVERY_FAILED') & (df[col_date].astype(str).str.strip() == tomorrow_str)
         filtered_df = df[mask].copy()
 
@@ -56,34 +60,27 @@ if uploaded_file:
             final_df = filtered_df.iloc[:, display_cols]
             final_df.columns = ['Parcel ID', 'Failure Reason', 'Next Delivery Date','Pickup Customer Name', 'TourID']
 
-            st.success(f"✅ พบรายการพัสดุ {len(final_df)} รายการ สำหรับวันที่ {tomorrow_str}")
+            st.success(f"✅ พบรายการทั้งหมด {len(final_df)} รายการ สำหรับวันที่ {tomorrow_str}")
             st.dataframe(final_df, use_container_width=True)
 
-            st.divider()
-            st.subheader("🚀 ส่งการแจ้งเตือน")
-            
-            if st.button("ส่งข้อมูลเข้า LINE ทั้งหมด"):
+            if st.button("🚀 ส่งข้อมูลเข้า LINE ทั้งหมด"):
                 success_count = 0
-                total_items = len(final_df)
                 progress_bar = st.progress(0.0)
                 
-                # แก้ไขการย่อหน้าตรงส่วนนี้
                 for i, (idx, row) in enumerate(final_df.iterrows()):
-                    msg = (f"⚠️ รายงานพัสดุ!\n"
+                    msg = (f"⚠️ แจ้งเตือนพัสดุ!\n"
                            f"📦 ID: {row['Parcel ID']}\n"
-                           f"📍 Customer: {row['Pickup Customer Name']}\n"
+                           f"📍 ชื่อลูกค้า: {row['Pickup Customer Name']}\n"
                            f"👤 Courier ID: {row['TourID']}")
                     
                     response = send_line_push(msg)
                     if response.status_code == 200:
                         success_count += 1
                     
-                    current_step = i + 1
-                    percent_complete = current_step / total_items
-                    progress_bar.progress(float(percent_complete))
+                    progress_bar.progress((i + 1) / len(final_df))
                 
                 st.balloons()
-                st.success(f"ส่งสำเร็จแล้ว {success_count} รายการ!")
+                st.success(f"ส่งเข้า LINE สำเร็จแล้ว {success_count} รายการ!")
         else:
             st.warning(f"❌ ไม่พบรายการสำหรับวันที่ {tomorrow_str}")
 

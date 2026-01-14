@@ -1,4 +1,8 @@
 import streamlit as st
+import pandas as pd
+from datetime import datetime, timedelta
+import requests
+import json
 hide_st_style = """
             <style>
             #MainMenu {visibility: hidden;}
@@ -7,11 +11,6 @@ hide_st_style = """
             </style>
             """
 st.markdown(hide_st_style, unsafe_allow_html=True)
-
-import pandas as pd
-from datetime import datetime, timedelta
-import requests
-import json
 
 LINE_ACCESS_TOKEN = "ztDjzTNBkelWGloIlOw+WTGcSRlopY5QQljoxrSD13rHOQ7rD8iMAzodBppKH3tkUX7wKAx2cBveWCi/xWG8NODcXPfmLUPWAGZqUDOYy19dTLUqYPX+xaFMPeNf5s32ezrfcHK9XpLd5swV0t6jBAdB04t89/1O/w1cDnyilFU="
 USER_ID = "Cd344d34fa9507060a68cf386aa3b6b4b" 

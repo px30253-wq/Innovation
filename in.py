@@ -1,10 +1,10 @@
 import streamlit as st
 import pandas as pd
-from datetime import datetime, timedelta
+from datetime import datetime
 import requests
 import json
 
-# --- ส่วนซ่อนเมนูเพื่อความปลอดภัย (แม้จะเป็น Public) ---
+# --- ส่วนซ่อนเมนูเพื่อความปลอดภัย ---
 hide_st_style = """
             <style>
             #MainMenu {visibility: hidden;}
@@ -32,7 +32,7 @@ def send_line_push(message_text):
 
 st.set_page_config(page_title="INNOVATION LINE ALERT", layout="wide")
 st.title("📦 ระบบกรองข้อมูลและแจ้งเตือนผ่าน LINE")
-st.info("อัปโหลดไฟล์เพื่อกรองรายการ DELIVERY_FAILED ของวันพรุ่งนี้")
+st.info("อัปโหลดไฟล์เพื่อกรองรายการ DELIVERY_FAILED ของวันนี้")
 
 uploaded_file = st.file_uploader("เลือกไฟล์ Inventory Report (.csv หรือ .xlsx)", type=["csv", "xlsx", "xls"])
 
@@ -43,21 +43,23 @@ if uploaded_file:
         else:
             df = pd.read_excel(uploaded_file)
 
-        tomorrow = datetime.now() + timedelta(days=1)
-        tomorrow_str = tomorrow.strftime('%d-%b-%Y') 
+        # แก้ไขจุดนี้: เปลี่ยนจากวันพรุ่งนี้เป็นวันนี้
+        today = datetime.now()
+        today_str = today.strftime('%d-%b-%Y') 
 
         col_status = df.columns[3]
         col_date = df.columns[5]
         
-        mask = (df[col_status] == 'DELIVERY_FAILED') & (df[col_date].astype(str).str.strip() == tomorrow_str)
+        # แก้ไขจุดนี้: กรองด้วยวันที่ของวันนี้
+        mask = (df[col_status] == 'DELIVERY_FAILED') & (df[col_date].astype(str).str.strip() == today_str)
         filtered_df = df[mask].copy()
 
         if not filtered_df.empty:
             display_cols = [1, 4, 5, 13, 15]
             final_df = filtered_df.iloc[:, display_cols]
-            final_df.columns = ['Parcel ID', 'Failure Reason', 'Next Delivery Date','Pickup Customer Name', 'TourID']
+            final_df.columns = ['Parcel ID', 'Failure Reason', 'Delivery Date','Pickup Customer Name', 'TourID']
 
-            st.success(f"✅ พบรายการพัสดุ {len(final_df)} รายการ สำหรับวันที่ {tomorrow_str}")
+            st.success(f"✅ พบรายการพัสดุ {len(final_df)} รายการ สำหรับวันที่ {today_str}")
             st.dataframe(final_df, use_container_width=True)
 
             st.divider()
@@ -68,9 +70,8 @@ if uploaded_file:
                 total_items = len(final_df)
                 progress_bar = st.progress(0.0)
                 
-                # แก้ไขการย่อหน้าตรงส่วนนี้
                 for i, (idx, row) in enumerate(final_df.iterrows()):
-                    msg = (f"⚠️ รายงานพัสดุ!\n"
+                    msg = (f"⚠️ รายงานพัสดุวันนี้!\n"
                            f"📦 ID: {row['Parcel ID']}\n"
                            f"📍 Customer: {row['Pickup Customer Name']}\n"
                            f"👤 Courier ID: {row['TourID']}")
@@ -86,7 +87,7 @@ if uploaded_file:
                 st.balloons()
                 st.success(f"ส่งสำเร็จแล้ว {success_count} รายการ!")
         else:
-            st.warning(f"❌ ไม่พบรายการสำหรับวันที่ {tomorrow_str}")
+            st.warning(f"❌ ไม่พบรายการสำหรับวันที่ {today_str}")
 
     except Exception as e:
         st.error(f"เกิดข้อผิดพลาด: {e}")

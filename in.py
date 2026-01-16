@@ -71,7 +71,7 @@ if uploaded_file:
                 progress_bar = st.progress(0.0)
                 
                 for i, (idx, row) in enumerate(final_df.iterrows()):
-                    msg = (f"⚠️ รายงานพัสดุวันนี้!\n"
+                    msg = (f"⚠️ รายงานพัสดุ ที่ต้องนำส่งอีกครั้ง วันนี้!\n"
                            f"📦 ID: {row['Parcel ID']}\n"
                            f"📍 Customer: {row['Pickup Customer Name']}\n"
                            f"👤 Courier ID: {row['TourID']}")

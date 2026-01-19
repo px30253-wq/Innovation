@@ -74,6 +74,7 @@ if uploaded_file:
                     msg = (f"⚠️ รายงานพัสดุ ที่ต้องนำส่งอีกครั้ง วันนี้!\n"
                            f"📦 ID: {row['Parcel ID']}\n"
                            f"📍 Customer: {row['Pickup Customer Name']}\n"
+                           f"🚚 Status: {row['Failure Reason']}\n"
                            f"👤 Courier ID: {row['TourID']}")
                     
                     response = send_line_push(msg)

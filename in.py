@@ -43,16 +43,15 @@ if uploaded_file:
         else:
             df = pd.read_excel(uploaded_file)
 
-        # แก้ไขจุดนี้: เปลี่ยนจากวันพรุ่งนี้เป็นวันนี้
-        today = datetime.now()
-        today_str = today.strftime('%d-%b-%Y') 
+        today = datetime.now().date()
 
-        col_status = df.columns[4]
-        col_date = df.columns[6]
-        
-        # แก้ไขจุดนี้: กรองด้วยวันที่ของวันนี้
-        mask = (df[col_status] == 'DELIVERY_FAILED') & (df[col_date].astype(str).str.strip() == today_str)
-        filtered_df = df[mask].copy()
+col_status = df.columns[4]
+col_date = df.columns[6]
+
+df[col_date] = pd.to_datetime(df[col_date], errors='coerce').dt.date
+
+mask = (df[col_status] == 'DELIVERY_FAILED') & (df[col_date] == today)
+filtered_df = df[mask].copy()
 
         if not filtered_df.empty:
             display_cols = [1, 4, 5, 13, 15]

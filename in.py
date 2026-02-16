@@ -45,13 +45,19 @@ if uploaded_file:
 
         today = datetime.now().date()
 
-col_status = df.columns[4]
-col_date = df.columns[6]
+           try:
+    today = datetime.now().date()
 
-df[col_date] = pd.to_datetime(df[col_date], errors='coerce').dt.date
+    col_status = df.columns[4]
+    col_date = df.columns[6]
 
-mask = (df[col_status] == 'DELIVERY_FAILED') & (df[col_date] == today)
-filtered_df = df[mask].copy()
+    df[col_date] = pd.to_datetime(df[col_date], errors='coerce').dt.date
+
+    mask = (df[col_status] == 'DELIVERY_FAILED') & (df[col_date] == today)
+    filtered_df = df[mask].copy()
+
+except Exception as e:
+    st.error(f"Error: {e}")
 
         if not filtered_df.empty:
             display_cols = [1, 4, 5, 13, 15]

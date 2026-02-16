@@ -46,15 +46,15 @@ if uploaded_file:
         today = datetime.now().date()
 
            try:
-    today = datetime.now().date()
+            today = datetime.now().date()
 
-    col_status = df.columns[4]
-    col_date = df.columns[6]
+            col_status = df.columns[4]
+            col_date = df.columns[6]
 
-    df[col_date] = pd.to_datetime(df[col_date], errors='coerce').dt.date
+            df[col_date] = pd.to_datetime(df[col_date], errors='coerce').dt.date
 
-    mask = (df[col_status] == 'DELIVERY_FAILED') & (df[col_date] == today)
-    filtered_df = df[mask].copy()
+            mask = (df[col_status] == 'DELIVERY_FAILED') & (df[col_date] == today)
+            filtered_df = df[mask].copy()
 
 except Exception as e:
     st.error(f"Error: {e}")

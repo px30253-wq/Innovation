@@ -47,8 +47,8 @@ if uploaded_file:
         today = datetime.now()
         today_str = today.strftime('%d-%b-%Y') 
 
-        col_status = df.columns[3]
-        col_date = df.columns[5]
+        col_status = df.columns[4]
+        col_date = df.columns[6]
         
         # แก้ไขจุดนี้: กรองด้วยวันที่ของวันนี้
         mask = (df[col_status] == 'DELIVERY_FAILED') & (df[col_date].astype(str).str.strip() == today_str)

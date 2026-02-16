@@ -56,7 +56,7 @@ if uploaded_file:
               mask = (df[col_status] == 'DELIVERY_FAILED') & (df[col_date] == today)
               filtered_df = df[mask].copy()
 
-           except Exception as e:
+          except Exception as e:
               st.error(f"Error: {e}")
 
         if not filtered_df.empty:

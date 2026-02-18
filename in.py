@@ -37,25 +37,23 @@ st.info("อัปโหลดไฟล์เพื่อกรองราย�
 uploaded_file = st.file_uploader("เลือกไฟล์ Inventory Report (.csv หรือ .xlsx)", type=["csv", "xlsx", "xls"])
 
 if uploaded_file:
-    try:
-        if uploaded_file.name.endswith('.csv'):
-            df = pd.read_csv(uploaded_file, encoding='utf-8-sig')
-        else:
-            df = pd.read_excel(uploaded_file)
+   try:
+    if uploaded_file.name.endswith('.csv'):
+        df = pd.read_csv(uploaded_file, encoding='utf-8-sig')
+    else:
+        df = pd.read_excel(uploaded_file)
 
-        today = datetime.now().date()
+    tomorrow = datetime.now() + timedelta(days=1)
+    tomorrow_str = tomorrow.strftime('%d-%b-%Y') 
 
-           try:
-        if uploaded_file.name.endswith('.csv'):
-            df = pd.read_csv(uploaded_file, encoding='utf-8-sig')
-        else:
-            df = pd.read_excel(uploaded_file)
+    col_status = df.columns[3]
+    col_date = df.columns[5]
+    
+    mask = (df[col_status] == 'DELIVERY_FAILED') & (df[col_date].astype(str).str.strip() == tomorrow_str)
+    filtered_df = df[mask].copy()
 
-        tomorrow = datetime.now() + timedelta(days=1)
-        tomorrow_str = tomorrow.strftime('%d-%b-%Y') 
-
-        col_status = df.columns[3]
-        col_date = df.columns[5]
+except Exception as e:
+    print(f"Error: {e}")
         
         mask = (df[col_status] == 'DELIVERY_FAILED') & (df[col_date].astype(str).str.strip() == tomorrow_str)
         filtered_df = df[mask].copy()

@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-from datetime import datetime
+from datetime import datetime, timedelta  # เพิ่ม timedelta
 import requests
 import json
 
@@ -12,10 +12,13 @@ hide_st_style = """
             header {visibility: hidden;}
             </style>
             """
+
+# ต้องเรียก set_page_config ก่อนคำสั่ง streamlit อื่นๆ
+st.set_page_config(page_title="INNOVATION LINE ALERT", layout="wide")
 st.markdown(hide_st_style, unsafe_allow_html=True)
 
-LINE_ACCESS_TOKEN = "ztDjzTNBkelWGloIlOw+WTGcSRlopY5QQljoxrSD13rHOQ7rD8iMAzodBppKH3tkUX7wKAx2cBveWCi/xWG8NODcXPfmLUPWAGZqUDOYy19dTLUqYPX+xaFMPeNf5s32ezrfcHK9XpLd5swV0t6jBAdB04t89/1O/w1cDnyilFU="
-USER_ID = "U398d18e426987b0e189f434ebd941610" 
+LINE_ACCESS_TOKEN = "ใส่โทเคนของคุณที่นี่"
+USER_ID = "ใส่ User ID ของคุณที่นี่" 
 
 def send_line_push(message_text):
     url = "https://api.line.me/v2/bot/message/push"
@@ -30,37 +33,38 @@ def send_line_push(message_text):
     res = requests.post(url, headers=headers, data=json.dumps(payload))
     return res
 
-st.set_page_config(page_title="INNOVATION LINE ALERT", layout="wide")
 st.title("📦 ระบบกรองข้อมูลและแจ้งเตือนผ่าน LINE")
 st.info("อัปโหลดไฟล์เพื่อกรองรายการ DELIVERY_FAILED ของวันนี้")
 
 uploaded_file = st.file_uploader("เลือกไฟล์ Inventory Report (.csv หรือ .xlsx)", type=["csv", "xlsx", "xls"])
 
 if uploaded_file:
-  try:
-    if uploaded_file.name.endswith('.csv'):
-        df = pd.read_csv(uploaded_file, encoding='utf-8-sig')
-    else:
-        df = pd.read_excel(uploaded_file)
+    try:
+        # 1. อ่านไฟล์
+        if uploaded_file.name.endswith('.csv'):
+            df = pd.read_csv(uploaded_file, encoding='utf-8-sig')
+        else:
+            df = pd.read_excel(uploaded_file)
 
-    tomorrow = datetime.now() + timedelta(days=1)
-    tomorrow_str = tomorrow.strftime('%d-%b-%Y') 
+        # 2. เตรียมวันที่ (เพิ่ม today_str เพื่อใช้แสดงผล)
+        tomorrow = datetime.now() + timedelta(days=1)
+        tomorrow_str = tomorrow.strftime('%d-%b-%Y')
+        today_str = datetime.now().strftime('%d-%b-%Y') 
 
-    col_status = df.columns[3]
-    col_date = df.columns[5]
-    
-    mask = (df[col_status] == 'DELIVERY_FAILED') & (df[col_date].astype(str).str.strip() == tomorrow_str)
-    filtered_df = df[mask].copy()
-
-  except Exception as e:
-    print(f"Error: {e}")
+        # 3. กรองข้อมูล
+        col_status = df.columns[3]
+        col_date = df.columns[5]
         
-  if not filtered_df.empty:
+        mask = (df[col_status] == 'DELIVERY_FAILED') & (df[col_date].astype(str).str.strip() == tomorrow_str)
+        filtered_df = df[mask].copy()
+
+        # 4. ตรวจสอบและแสดงผล
+        if not filtered_df.empty:
             display_cols = [1, 4, 5, 13, 15]
             final_df = filtered_df.iloc[:, display_cols]
             final_df.columns = ['Parcel ID', 'Failure Reason', 'Delivery Date','Pickup Customer Name', 'TourID']
 
-            st.success(f"✅ พบรายการพัสดุ {len(final_df)} รายการ สำหรับวันที่ {today_str}")
+            st.success(f"✅ พบรายการพัสดุ {len(final_df)} รายการ สำหรับวันที่ {tomorrow_str}")
             st.dataframe(final_df, use_container_width=True)
 
             st.divider()
@@ -72,7 +76,8 @@ if uploaded_file:
                 progress_bar = st.progress(0.0)
                 
                 for i, (idx, row) in enumerate(final_df.iterrows()):
-                    msg = (f"⚠️ รายงานพัสดุ ที่ต้องนำส่งอีกครั้ง วันนี้!\n"
+                    msg = (f"⚠️ รายงานพัสดุ ที่ต้องนำส่งอีกครั้ง!\n"
+                           f"📅 วันที่: {row['Delivery Date']}\n"
                            f"📦 ID: {row['Parcel ID']}\n"
                            f"📍 Customer: {row['Pickup Customer Name']}\n"
                            f"🚚 Status: {row['Failure Reason']}\n"
@@ -82,16 +87,16 @@ if uploaded_file:
                     if response.status_code == 200:
                         success_count += 1
                     
-                    current_step = i + 1
-                    percent_complete = current_step / total_items
-                    progress_bar.progress(float(percent_complete))
+                    # Update Progress
+                    percent_complete = (i + 1) / total_items
+                    progress_bar.progress(percent_complete)
                 
                 st.balloons()
                 st.success(f"ส่งสำเร็จแล้ว {success_count} รายการ!")
-  else:
-            st.warning(f"❌ ไม่พบรายการสำหรับวันที่ {today_str}")
+        else:
+            st.warning(f"❌ ไม่พบรายการ DELIVERY_FAILED สำหรับวันที่ {tomorrow_str}")
 
-  except Exception as e:
-        st.error(f"เกิดข้อผิดพลาด: {e}")
-  else:
+    except Exception as e:
+        st.error(f"เกิดข้อผิดพลาดในการประมวลผล: {e}")
+else:
     st.write("รอการอัปโหลดไฟล์...")

@@ -91,7 +91,7 @@ if uploaded_file:
   else:
             st.warning(f"❌ ไม่พบรายการสำหรับวันที่ {today_str}")
 
-    except Exception as e:
+  except Exception as e:
         st.error(f"เกิดข้อผิดพลาด: {e}")
-else:
+  else:
     st.write("รอการอัปโหลดไฟล์...")

@@ -51,15 +51,10 @@ if uploaded_file:
     
     mask = (df[col_status] == 'DELIVERY_FAILED') & (df[col_date].astype(str).str.strip() == tomorrow_str)
     filtered_df = df[mask].copy()
-# อย่าลืมใส่ except: ปิดท้ายบล็อก try ด้วยนะครับ
- except Exception as e:
+
+  except Exception as e:
     print(f"Error: {e}")
         
-        mask = (df[col_status] == 'DELIVERY_FAILED') & (df[col_date].astype(str).str.strip() == tomorrow_str)
-        filtered_df = df[mask].copy()
-          except Exception as e:
-              st.error(f"Error: {e}")
-
         if not filtered_df.empty:
             display_cols = [1, 4, 5, 13, 15]
             final_df = filtered_df.iloc[:, display_cols]

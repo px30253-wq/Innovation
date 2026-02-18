@@ -55,7 +55,7 @@ if uploaded_file:
   except Exception as e:
     print(f"Error: {e}")
         
-        if not filtered_df.empty:
+  if not filtered_df.empty:
             display_cols = [1, 4, 5, 13, 15]
             final_df = filtered_df.iloc[:, display_cols]
             final_df.columns = ['Parcel ID', 'Failure Reason', 'Delivery Date','Pickup Customer Name', 'TourID']

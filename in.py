@@ -51,9 +51,8 @@ if uploaded_file:
     
     mask = (df[col_status] == 'DELIVERY_FAILED') & (df[col_date].astype(str).str.strip() == tomorrow_str)
     filtered_df = df[mask].copy()
-
 except Exception as e:
-    print(f"Error: {e}")
+ print(f"Error: {e}")
         
         mask = (df[col_status] == 'DELIVERY_FAILED') & (df[col_date].astype(str).str.strip() == tomorrow_str)
         filtered_df = df[mask].copy()

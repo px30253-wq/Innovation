@@ -4,7 +4,7 @@ from datetime import datetime, timedelta  # เพิ่ม timedelta
 import requests
 import json
 
-# --- ส่วนซ่อนเมนูเพื่อความปลอดภัย ---
+
 hide_st_style = """
             <style>
             #MainMenu {visibility: hidden;}
@@ -13,7 +13,7 @@ hide_st_style = """
             </style>
             """
 
-# ต้องเรียก set_page_config ก่อนคำสั่ง streamlit อื่นๆ
+
 st.set_page_config(page_title="INNOVATION LINE ALERT", layout="wide")
 st.markdown(hide_st_style, unsafe_allow_html=True)
 
@@ -40,25 +40,25 @@ uploaded_file = st.file_uploader("เลือกไฟล์ Inventory Report (
 
 if uploaded_file:
     try:
-        # 1. อ่านไฟล์
+        
         if uploaded_file.name.endswith('.csv'):
             df = pd.read_csv(uploaded_file, encoding='utf-8-sig')
         else:
             df = pd.read_excel(uploaded_file)
 
-        # 2. เตรียมวันที่ (เพิ่ม today_str เพื่อใช้แสดงผล)
+        
         tomorrow = datetime.now() + timedelta(days=1)
         tomorrow_str = tomorrow.strftime('%d-%b-%Y')
         today_str = datetime.now().strftime('%d-%b-%Y') 
 
-        # 3. กรองข้อมูล
+        
         col_status = df.columns[3]
         col_date = df.columns[5]
         
         mask = (df[col_status] == 'DELIVERY_FAILED') & (df[col_date].astype(str).str.strip() == tomorrow_str)
         filtered_df = df[mask].copy()
 
-        # 4. ตรวจสอบและแสดงผล
+        
         if not filtered_df.empty:
             display_cols = [1, 4, 5, 13, 15]
             final_df = filtered_df.iloc[:, display_cols]
@@ -76,7 +76,7 @@ if uploaded_file:
                 progress_bar = st.progress(0.0)
                 
                 for i, (idx, row) in enumerate(final_df.iterrows()):
-                    msg = (f"⚠️ รายงานพัสดุ ที่ต้องนำส่งอีกครั้ง!\n"
+                    msg = (f"⚠️ รายการพัสดุ ที่ต้องนำส่งอีกครั้ง!\n"
                            f"📅 วันที่: {row['Delivery Date']}\n"
                            f"📦 ID: {row['Parcel ID']}\n"
                            f"📍 Customer: {row['Pickup Customer Name']}\n"

@@ -17,8 +17,8 @@ hide_st_style = """
 st.set_page_config(page_title="INNOVATION LINE ALERT", layout="wide")
 st.markdown(hide_st_style, unsafe_allow_html=True)
 
-LINE_ACCESS_TOKEN = "ใส่โทเคนของคุณที่นี่"
-USER_ID = "ใส่ User ID ของคุณที่นี่" 
+LINE_ACCESS_TOKEN = "ztDjzTNBkelWGloIlOw+WTGcSRlopY5QQljoxrSD13rHOQ7rD8iMAzodBppKH3tkUX7wKAx2cBveWCi/xWG8NODcXPfmLUPWAGZqUDOYy19dTLUqYPX+xaFMPeNf5s32ezrfcHK9XpLd5swV0t6jBAdB04t89/1O/w1cDnyilFU="
+USER_ID = "U398d18e426987b0e189f434ebd941610" 
 
 def send_line_push(message_text):
     url = "https://api.line.me/v2/bot/message/push"

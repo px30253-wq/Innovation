@@ -37,7 +37,7 @@ st.info("อัปโหลดไฟล์เพื่อกรองราย�
 uploaded_file = st.file_uploader("เลือกไฟล์ Inventory Report (.csv หรือ .xlsx)", type=["csv", "xlsx", "xls"])
 
 if uploaded_file:
-   try:
+  try:
     if uploaded_file.name.endswith('.csv'):
         df = pd.read_csv(uploaded_file, encoding='utf-8-sig')
     else:
@@ -51,7 +51,8 @@ if uploaded_file:
     
     mask = (df[col_status] == 'DELIVERY_FAILED') & (df[col_date].astype(str).str.strip() == tomorrow_str)
     filtered_df = df[mask].copy()
-   except Exception as e:
+# อย่าลืมใส่ except: ปิดท้ายบล็อก try ด้วยนะครับ
+ except Exception as e:
     print(f"Error: {e}")
         
         mask = (df[col_status] == 'DELIVERY_FAILED') & (df[col_date].astype(str).str.strip() == tomorrow_str)
